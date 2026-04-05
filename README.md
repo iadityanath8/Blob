@@ -34,7 +34,7 @@ Supported pattern operators:
 #include "blob.h"
 
 int main() {
-    B_Result r = l_blob("maina*", "mainajs");
+    B_Result r = BLB_blob("maina*", "mainajs");
 
     if (r == B_MATCHED) {
         printf("Matched\n");
@@ -54,10 +54,10 @@ Matched
 
 ## API
 
-### `l_blob`
+### `BLB_blob`
 
 ```c
-B_Result l_blob(str pattern, str text);
+B_Result BLB_blob(str pattern, str text);
 ```
 
 Match a text string against a glob pattern.
