@@ -280,16 +280,27 @@ BLOB_DECL void BLB_free_Arr(String_Arr arr) {
   free(arr.items); 
 }
 
-BLOB_DECL String_Arr BLB_match(str pattern, str text){
+BLOB_DECL String_Arr BLB_match(str pattern, str text, const char* mode,B_Result* matched){
   String_Arr arr = {0};
   u32 n = strlen(pattern);
   u32 m = strlen(text);
+  if (mode == NULL) mode = "sm";
 
   u32 n_matched = 0;
   for (u32 pos = 0;pos < m;pos++) {
     if (BLB_Sblob(pattern,text + pos,n,m - pos,&n_matched) == B_MATCHED) {
       Blob_String_View view = {.v = text + pos,.len = (n_matched)};
-      da_append(&arr,view);
+      if (strcmp(mode,"fm") == 0) {
+        da_append(&arr,view);
+      }else if (strcmp(mode,"sm") == 0) {
+        da_append(&arr, view);
+        pos += n_matched;
+      }else {
+        if (matched) {
+          *matched = B_MATCHED;
+        }
+        break;
+      }
     }
   }
   return arr;
