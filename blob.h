@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <ctype.h>
 
 #define da_append(xs, x)                                                             \
   do {                                                                             \
@@ -105,6 +106,7 @@ BLOB_DECL B_Result BLB_blob(str patt, str tex){
                  text_pos = text;
                }break;
       case '[':{
+                 pattern++;
                  bool matcher = false;
                  bool negate = false;
                  while (*pattern != ']' && *pattern != '\0'){
@@ -189,6 +191,7 @@ BLOB_DECL B_Result BLB_Sblob(str pattern, str text,i32 n,i32 m,u32* n_matched){
                  text_pos = j;//text;
                }break;
       case '[':{
+                 i++;
                  bool matcher = false;
                  bool negate = false;
                  while (i < n && pattern[i] != ']'){
@@ -207,7 +210,7 @@ BLOB_DECL B_Result BLB_Sblob(str pattern, str text,i32 n,i32 m,u32* n_matched){
                                 if (*prev != '[')  {
                                   return B_SYNTAX_NEGATE_ERR;
                                 }
-                                if ((i + 1) == n) return B_SYNTAX_ERROR_UNCLOSED;
+                                if ((i + 1) == n)  return B_SYNTAX_ERROR_UNCLOSED;
                                 if (*next == ']')  return B_SYNTAX_ERROR_RANGE_NO_END;
                                 negate=true;
                               }break;         
@@ -260,7 +263,6 @@ BLOB_DECL B_Result BLB_Sblob(str pattern, str text,i32 n,i32 m,u32* n_matched){
 
 
 
-
 /**
   function returns the Arr of String_View of the particular string matchied 
 
@@ -268,17 +270,18 @@ BLOB_DECL B_Result BLB_Sblob(str pattern, str text,i32 n,i32 m,u32* n_matched){
     str  v;
     u32 len;
   }Blob_String_View;
-*/
+  */
 
 /*
  *        Blob_String_View view = {.v = text + pos,.len = (u32)(n_matched)};
-          da_append(&arr,view);
+ da_append(&arr,view);
  *
  */
 
 BLOB_DECL void BLB_free_Arr(String_Arr arr) {
   free(arr.items); 
 }
+
 
 BLOB_DECL String_Arr BLB_match(str pattern, str text, const char* mode,B_Result* matched){
   String_Arr arr = {0};
@@ -290,15 +293,15 @@ BLOB_DECL String_Arr BLB_match(str pattern, str text, const char* mode,B_Result*
   for (u32 pos = 0;pos < m;pos++) {
     if (BLB_Sblob(pattern,text + pos,n,m - pos,&n_matched) == B_MATCHED) {
       Blob_String_View view = {.v = text + pos,.len = (n_matched)};
+      
+      if (matched) *matched = B_MATCHED;
+
       if (strcmp(mode,"fm") == 0) {
         da_append(&arr,view);
       }else if (strcmp(mode,"sm") == 0) {
         da_append(&arr, view);
-        pos += n_matched;
+        pos += n_matched - 1;
       }else {
-        if (matched) {
-          *matched = B_MATCHED;
-        }
         break;
       }
     }

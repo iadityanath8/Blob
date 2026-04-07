@@ -23,10 +23,9 @@
 //}
 //
 int main() {
-//  EXPECT("?MEo","bMEo",     B_MATCHED);    
-//  EXPECT("main.?","main.c", B_MATCHED);     
-//  EXPECT("main.?","main.js",B_UNMATCHED);     
-//
+//  EXPECT("?MEo","bMEo",     B_MATCHED);
+//  EXPECT("main.?","main.c", B_MATCHED);
+//  EXPECT("main.?","main.js",B_UNMATCHED);
 //  printf("---------------------------------------------------------------\n");
 //  EXPECT("*","",B_MATCHED);   
 //  EXPECT("*Law*","GrokLaw", B_MATCHED);
@@ -42,16 +41,21 @@ int main() {
 //
 //  EXPECT("?[a-f]*", "dfBHow", B_MATCHED); 
 //  EXPECT("[0-9]hosadi", "5hosadi", B_MATCHED);
-
-  str s2 = "this 99th is me in here woow dfBHOW bBHOW";
-//  str pattern = "[0-9][0-9]thchar";
-  str patt2 = "[db][df?]BHOW";
-  auto arr = BLB_match(patt2, s2,NULL,NULL);
+  
+//  str 
+  str patt = ");?";
+  B_Result res = B_UNMATCHED;
+  str s1 = "EXPECT(\"?MEo\", \"bMEo\", B_MATCHED);a";
+  auto arr = BLB_match(patt, s1, NULL,&res);
+  
+//  res =  BLB_Sblob(patt, s1, strlen(patt),strlen(s1),NULL);
+  printf("%s\n",b_to_str(res));
 
   for (i32 i = 0;i < arr.count;i++){
-    printf("%.*s\n",arr.items[i].len,arr.items[i].v);
-  }
-  BLB_free_Arr(arr);
+   printf("%.*s and  %d\n",arr.items[i].len,arr.items[i].v,arr.items[i].len);
+ }
+
+  //  BLB_free_Arr(arr);
   return 0;
 }
 

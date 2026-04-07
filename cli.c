@@ -112,9 +112,12 @@ static inline void print_search_lines(str filename, str pattern, bool ignore_cas
 
     while(fgets(buf,LINE_BUFF,fp)) {
         matched = B_UNMATCHED;
+        buf[strcspn(buf,"\n\r")] = '\0';
+        arr = BLB_match(pattern, buf,"fm",&matched);
         if (ignore_case) {
             char* dupped = strdup(buf);
             lowestr(dupped);
+            lowestr(pattern);
             arr = BLB_match(pattern, dupped,TABLE[cmd], &matched);
             if (cmd != CMD_LS) inarr = true;
             free(dupped);
@@ -127,10 +130,9 @@ static inline void print_search_lines(str filename, str pattern, bool ignore_cas
             printf("%s:%d: %.*s\n",filename,line_count + 1,arr.items[i].len,arr.items[i].v);
           }
         }
-        else if (matched == B_MATCHED) {
-            printf("%s:%d: %s\n",filename,line_count + 1,buf);
+        if (matched == B_MATCHED) {
+            printf("%s:%d: %s\n",filename,line_count + 1,buf); 
         }
-
         line_count++;
     }
     free(arr.items);
